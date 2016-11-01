@@ -76,7 +76,7 @@ int IonAlloc::alloc_buffer(alloc_data& data)
 #ifdef QCOM_BSP
     ionAllocData.heap_mask = data.flags & ~ION_SECURE;
 #else
-    ionAllocData.heap_id_mask = data.flags & ~ION_SECURE;
+    ionAllocData.heap_mask = data.flags & ~ION_SECURE;
 #endif
     ionAllocData.flags = data.uncached ? 0 : ION_FLAG_CACHED;
     // ToDo: replace usage of alloc data structure with

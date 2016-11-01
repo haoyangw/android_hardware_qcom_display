@@ -78,6 +78,14 @@ public:
      */
     void configDone();
 
+    /* Returns an available pipe based on the type of pipe requested. When ANY
+     * is requested, the first available VG or RGB is returned. If no pipe is
+     * available for the display "dpy" then INV is returned. Note: If a pipe is
+     * assigned to a certain display, then it cannot be assigned to another
+     * display without being garbage-collected once. To add if a pipe is
+     * asisgned to a mixer within a display it cannot be reused for another
+     * mixer without being UNSET once*/
+    utils::eDest nextPipe(utils::eMdpPipeType, int dpy, int mixer);
     /* Get a pipe that supported the specified format class (yuv, rgb) and has
      * scaling capabilities.
      */
@@ -119,12 +127,6 @@ public:
      * displays
      */
     bool isPipeTypeAttached(utils::eMdpPipeType type);
-    /* Compare pipe priorities and return
-     * 1 if 1st pipe has a higher priority
-     * 0 if both have the same priority
-     *-1 if 2nd pipe has a higher priority
-     */
-    int comparePipePriority(utils::eDest pipe1Index, utils::eDest pipe2Index);
     /* Returns pipe dump. Expects a NULL terminated buffer of big enough size
      * to populate.
      */
@@ -146,12 +148,9 @@ public:
     static int getDMAMode();
     /* Returns the framebuffer node backing up the display */
     static int getFbForDpy(const int& dpy);
+    static bool displayCommit(const int& fd, const utils::Dim& roi);
 
     static bool displayCommit(const int& fd);
-    /* Overloads display commit with ROI's of each halves.
-     * Single interface panels will only update left ROI. */
-    static bool displayCommit(const int& fd, const utils::Dim& lRoi,
-                              const utils::Dim& rRoi);
 
 private:
     /* Ctor setup */
@@ -160,14 +159,6 @@ private:
     void validate(int index);
     static void setDMAMultiplexingSupported();
     void dump() const;
-    /* Returns an available pipe based on the type of pipe requested. When ANY
-     * is requested, the first available VG or RGB is returned. If no pipe is
-     * available for the display "dpy" then INV is returned. Note: If a pipe is
-     * assigned to a certain display, then it cannot be assigned to another
-     * display without being garbage-collected once. To add if a pipe is
-     * asisgned to a mixer within a display it cannot be reused for another
-     * mixer without being UNSET once*/
-    utils::eDest nextPipe(utils::eMdpPipeType, int dpy, int mixer);
     /* Helpers that enfore target specific policies while returning pipes */
     utils::eDest getPipe_8x26(const PipeSpecs& pipeSpecs);
     utils::eDest getPipe_8x16(const PipeSpecs& pipeSpecs);

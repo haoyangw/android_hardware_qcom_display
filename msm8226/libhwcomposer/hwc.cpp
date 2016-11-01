@@ -643,20 +643,8 @@ static int hwc_set_primary(hwc_context_t *ctx, hwc_display_contents_1_t* list) {
             }
         }
 
-        int lSplit = getLeftSplit(ctx, dpy);
-        qhwc::ovutils::Dim lRoi = qhwc::ovutils::Dim(
-            ctx->listStats[dpy].lRoi.left,
-            ctx->listStats[dpy].lRoi.top,
-            ctx->listStats[dpy].lRoi.right - ctx->listStats[dpy].lRoi.left,
-            ctx->listStats[dpy].lRoi.bottom - ctx->listStats[dpy].lRoi.top);
-
-        qhwc::ovutils::Dim rRoi = qhwc::ovutils::Dim(
-            ctx->listStats[dpy].rRoi.left - lSplit,
-            ctx->listStats[dpy].rRoi.top,
-            ctx->listStats[dpy].rRoi.right - ctx->listStats[dpy].rRoi.left,
-            ctx->listStats[dpy].rRoi.bottom - ctx->listStats[dpy].rRoi.top);
-
-        if(!Overlay::displayCommit(ctx->dpyAttr[dpy].fd, lRoi, rRoi)) {
+        if(!Overlay::displayCommit(ctx->dpyAttr[dpy].fd,
+                                            ctx->listStats[dpy].roi)) {
             ALOGE("%s: display commit fail for %d dpy!", __FUNCTION__, dpy);
             ret = -1;
         }
@@ -862,7 +850,7 @@ void hwc_dump(struct hwc_composer_device_1* dev, char *buff, int buff_len)
         dumpsys_log(aBuf, "  Vsync is being faked!!\n");
     for(int dpy = 0; dpy < HWC_NUM_DISPLAY_TYPES; dpy++) {
         if(ctx->mMDPComp[dpy])
-            ctx->mMDPComp[dpy]->dump(aBuf, ctx);
+            ctx->mMDPComp[dpy]->dump(aBuf);
     }
     char ovDump[2048] = {'\0'};
     ctx->mOverlay->getDump(ovDump, 2048);

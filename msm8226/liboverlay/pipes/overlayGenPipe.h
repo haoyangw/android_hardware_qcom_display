@@ -65,8 +65,6 @@ public:
     const utils::PipeArgs& getArgs() const;
     /* retrieve cached crop data */
     utils::Dim getCrop() const;
-    /* return pipe priority */
-    uint8_t getPriority() const;
     /* dump the state of the object */
     void dump() const;
     /* Return the dump in the specified buffer */

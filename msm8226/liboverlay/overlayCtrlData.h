@@ -79,8 +79,6 @@ public:
     utils::Dim getPosition() const;
     /* Update the src format based on rotator's dest */
     void updateSrcFormat(const uint32_t& rotDstFormat);
-    /* return pipe priority */
-    uint8_t getPriority() const;
     /* dump the state of the object */
     void dump() const;
     /* Return the dump in the specified buffer */
@@ -209,10 +207,6 @@ inline utils::Dim Ctrl::getCrop() const {
 
 inline utils::Dim Ctrl::getPosition() const {
     return mMdp->getDstRectDim();
-}
-
-inline uint8_t Ctrl::getPriority() const {
-    return mMdp->getPriority();
 }
 
 inline void Ctrl::getDump(char *buf, size_t len) {

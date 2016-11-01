@@ -290,19 +290,6 @@ bool Overlay::isPipeTypeAttached(eMdpPipeType type) {
     return false;
 }
 
-int Overlay::comparePipePriority(utils::eDest pipe1Index,
-        utils::eDest pipe2Index) {
-    validate((int)pipe1Index);
-    validate((int)pipe2Index);
-    uint8_t pipe1Prio = mPipeBook[(int)pipe1Index].mPipe->getPriority();
-    uint8_t pipe2Prio = mPipeBook[(int)pipe2Index].mPipe->getPriority();
-    if(pipe1Prio > pipe2Prio)
-        return -1;
-    if(pipe1Prio < pipe2Prio)
-        return 1;
-    return 0;
-}
-
 bool Overlay::commit(utils::eDest dest) {
     bool ret = false;
     validate((int)dest);
@@ -478,24 +465,19 @@ int Overlay::initOverlay() {
 }
 
 bool Overlay::displayCommit(const int& fd) {
-    utils::Dim lRoi, rRoi;
-    return displayCommit(fd, lRoi, rRoi);
+    utils::Dim roi;
+    return displayCommit(fd, roi);
 }
 
-bool Overlay::displayCommit(const int& fd, const utils::Dim& lRoi,
-        const utils::Dim& rRoi) {
+bool Overlay::displayCommit(const int& fd, const utils::Dim& roi) {
     //Commit
     struct mdp_display_commit info;
     memset(&info, 0, sizeof(struct mdp_display_commit));
     info.flags = MDP_DISPLAY_COMMIT_OVERLAY;
-    info.l_roi.x = lRoi.x;
-    info.l_roi.y = lRoi.y;
-    info.l_roi.w = lRoi.w;
-    info.l_roi.h = lRoi.h;
-    info.r_roi.x = rRoi.x;
-    info.r_roi.y = rRoi.y;
-    info.r_roi.w = rRoi.w;
-    info.r_roi.h = rRoi.h;
+    info.roi.x = roi.x;
+    info.roi.y = roi.y;
+    info.roi.w = roi.w;
+    info.roi.h = roi.h;
 
     if(!mdp_wrapper::displayCommit(fd, info)) {
         ALOGE("%s: commit failed", __func__);
